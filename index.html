@@ -94,13 +94,13 @@
     </div>
 
     <div class="form-group">
-        <label>المدة (بالساعات):</label>
-        <input type="number" id="hours" placeholder="أدخل عدد الساعات">
+        <label>مدة الإجازة (بالساعات):</label>
+        <input type="number" id="hours" placeholder="أدخل الساعات المراد أخذها">
     </div>
 
     <div class="form-group">
-        <label>الرصيد المتبقي (بالساعات):</label>
-        <input type="number" id="remain" placeholder="0">
+        <label>الرصيد الإجمالي الحالي (بالساعات):</label>
+        <input type="number" id="remain" placeholder="كم رصيده قبل الخصم؟">
     </div>
 
     <div class="btns">
@@ -114,10 +114,13 @@
 <script>
     function generate() {
         const idInput = document.getElementById('copyID').value.trim();
-        const hValue = document.getElementById('hours').value;
-        const h = hValue || "0";
-        const r = document.getElementById('remain').value || "0";
+        const hValue = parseFloat(document.getElementById('hours').value) || 0;
+        const rValue = parseFloat(document.getElementById('remain').value) || 0;
+        
         const mention = idInput ? `<@${idInput}>` : "( لم يحدد )";
+        
+        // حساب الرصيد المتبقي بعد الخصم
+        const finalBalance = rValue - hValue;
         
         // وقت البداية (الآن)
         const now = new Date();
@@ -125,7 +128,7 @@
         const startTime = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
 
         // وقت النهاية (حساب الوقت بناءً على الساعات المدخلة)
-        const endDate = new Date(now.getTime() + (parseFloat(h) * 60 * 60 * 1000));
+        const endDate = new Date(now.getTime() + (hValue * 60 * 60 * 1000));
         const endDay = endDate.toLocaleDateString('en-GB');
         const endTime = endDate.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
 
@@ -133,9 +136,9 @@
 
 ***\`المسعف المحترم :\`***  ${mention}  
 
-***\`المــــدة :\` ${h} ساعة***  
+***\`المــــدة :\` ${hValue} ساعة***  
 
-***\`الرصيد المتبقي :\` ${r} ساعة***  
+***\`الرصيد المتبقي :\` ${finalBalance} ساعة***  
 
 ***من تاريخ ${startDay}| ${startTime}***  
 ***الى تاريخ ${endDay}| ${endTime}***  
