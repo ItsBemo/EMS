@@ -7,42 +7,56 @@
     <style>
         :root {
             --red-dark: #7b0000;
-            --bg-black: #0f0f0f;
-            --card-bg: #1a1a1a;
+            --overlay: rgba(15, 15, 15, 0.85); /* طبقة شفافة فوق الصورة عشان النص يبان */
         }
+
         body {
-            background-color: var(--bg-black);
+            /* هنا تحطين اسم الصورة اللي ترفعينها على جيت هب */
+            background-image: url('bg.png'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #000; /* لون احتياطي */
             color: #eee;
             font-family: 'Arial', sans-serif;
             display: flex;
             justify-content: center;
             padding: 40px 20px;
             margin: 0;
+            min-height: 100vh;
         }
+
         .container {
-            background-color: var(--card-bg);
+            background-color: var(--overlay);
             width: 100%;
             max-width: 500px;
             padding: 30px;
             border-radius: 15px;
             border-top: 5px solid var(--red-dark);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px); /* تأثير تغبيش خلف الصندوق */
         }
-        h1 { color: var(--red-dark); text-align: center; font-size: 1.6rem; margin-bottom: 25px; }
+
+        h1 { color: #fff; text-align: center; font-size: 1.6rem; margin-bottom: 25px; text-shadow: 2px 2px 4px #000; }
+        
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #aaa; }
+        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #ccc; }
+        
         input {
             width: 100%;
             padding: 12px;
-            background: #252525;
-            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.1); /* مربعات شفافة */
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             color: #fff;
             box-sizing: border-box;
             outline: none;
         }
-        input:focus { border-color: var(--red-dark); }
+
+        input:focus { border-color: var(--red-dark); background: rgba(255, 255, 255, 0.15); }
+
         .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 25px; }
+        
         button {
             padding: 12px;
             border: none;
@@ -51,18 +65,20 @@
             cursor: pointer;
             transition: 0.3s;
         }
+
         .btn-gen { background-color: var(--red-dark); color: white; }
-        .btn-copy { background-color: #444; color: white; }
-        button:hover { opacity: 0.8; }
+        .btn-copy { background-color: #333; color: white; border: 1px solid #444; }
+        button:hover { opacity: 0.8; transform: scale(1.02); }
+
         #output {
             margin-top: 20px;
-            background: #000;
+            background: rgba(0, 0, 0, 0.7);
             padding: 15px;
             border-radius: 8px;
             font-size: 0.85rem;
             display: none;
             white-space: pre-wrap;
-            border: 1px dashed #444;
+            border: 1px dashed var(--red-dark);
             line-height: 1.6;
             text-align: right;
         }
@@ -89,8 +105,8 @@
     </div>
 
     <div class="btns">
-        <button class="btn-gen" onclick="generate()">إنشاء الإجازة </button>
-        <button class="btn-copy" onclick="copy()">نسخ الرسالة </button>
+        <button class="btn-gen" onclick="generate()">إنشاء الإجازة ✨</button>
+        <button class="btn-copy" onclick="copy()">نسخ الرسالة 📋</button>
     </div>
 
     <div id="output"></div>
@@ -101,10 +117,7 @@
         const idInput = document.getElementById('copyID').value.trim();
         const h = document.getElementById('hours').value || "0";
         const r = document.getElementById('remain').value || "0";
-        
-        // تحويل الـ ID إلى صيغة منشن ديسكورد
         const mention = idInput ? `<@${idInput}>` : "( لم يحدد )";
-        
         const now = new Date();
         const d = now.toLocaleDateString('en-GB'); 
         const t = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
@@ -129,7 +142,7 @@
 
 ***02/ يجب العودة من الإجازة قبل انتهاء مدتها وتغيير الوظيفة إلى قطاع الميكانيك. من يخالف ذلك سيُعتبر تهرباً وظيفياً وستتم محاسبته من قِبل إدارة الهلال الأحمر .***  
 
-***03/ في حال كان لديك عذر وقدمته عبر فتح تذكرة (تكت) إجازة سيتم فقط تصفير إجازاتك مهما كان السبب وعدم إعطائك تهرب وظيفي***  
+***03/ في حال كان لديك عذر وقدمته عبر فتح تذكرة إجازة سيتم فقط تصفير إجازاتك مهما كان السبب وعدم إعطائك تهرب وظيفي***  
 
 ***04/ في حال تم سجنك رقابياً سيتم تطبيق العقوبة عليك حسب قوانين الإجازات ***  
 
