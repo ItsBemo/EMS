@@ -7,16 +7,15 @@
     <style> 
         :root {
             --red-dark: #7b0000;
-            --overlay: rgba(15, 15, 15, 0.85); /* طبقة شفافة فوق الصورة عشان النص يبان */
+            --overlay: rgba(15, 15, 15, 0.85);
         }
 
         body {
-            /* هنا تحطين اسم الصورة اللي ترفعينها على جيت هب */
             background-image: url('ems.png'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-color: #000; /* لون احتياطي */
+            background-color: #000;
             color: #eee;
             font-family: 'Arial', sans-serif;
             display: flex;
@@ -34,7 +33,7 @@
             border-radius: 15px;
             border-top: 5px solid var(--red-dark);
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px); /* تأثير تغبيش خلف الصندوق */
+            backdrop-filter: blur(10px);
         }
 
         h1 { color: #fff; text-align: center; font-size: 1.6rem; margin-bottom: 25px; text-shadow: 2px 2px 4px #000; }
@@ -45,7 +44,7 @@
         input {
             width: 100%;
             padding: 12px;
-            background: rgba(255, 255, 255, 0.1); /* مربعات شفافة */
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             color: #fff;
@@ -96,7 +95,7 @@
 
     <div class="form-group">
         <label>المدة (بالساعات):</label>
-        <input type="number" id="hours" placeholder="0">
+        <input type="number" id="hours" placeholder="أدخل عدد الساعات">
     </div>
 
     <div class="form-group">
@@ -115,23 +114,31 @@
 <script>
     function generate() {
         const idInput = document.getElementById('copyID').value.trim();
-        const h = document.getElementById('hours').value || "0";
+        const hValue = document.getElementById('hours').value;
+        const h = hValue || "0";
         const r = document.getElementById('remain').value || "0";
         const mention = idInput ? `<@${idInput}>` : "( لم يحدد )";
+        
+        // وقت البداية (الآن)
         const now = new Date();
-        const d = now.toLocaleDateString('en-GB'); 
-        const t = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+        const startDay = now.toLocaleDateString('en-GB'); 
+        const startTime = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+
+        // وقت النهاية (حساب الوقت بناءً على الساعات المدخلة)
+        const endDate = new Date(now.getTime() + (parseFloat(h) * 60 * 60 * 1000));
+        const endDay = endDate.toLocaleDateString('en-GB');
+        const endTime = endDate.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
 
         const msg = `***\` إجازة داخلية \`*** 
 
-***\`المسعف المحترم :\`***  ${mention}  
+***\`المسعف المحترم :\`***  ${mention}  
 
 ***\`المــــدة :\` ${h} ساعة***  
 
 ***\`الرصيد المتبقي :\` ${r} ساعة***  
 
-***من تاريخ ${d}| ${t}***  
-***الى تاريخ ${d}| ينتهي بنفس توقيت العودة***  
+***من تاريخ ${startDay}| ${startTime}***  
+***الى تاريخ ${endDay}| ${endTime}***  
 
 ***\`ملاحظة :\`***  
 ***تنتهي اجازتك بنفس التوقيت الذي ستعود فيه .***  
