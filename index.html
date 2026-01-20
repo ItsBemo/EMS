@@ -2,34 +2,75 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>موقعي البسيط</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد رسائل الإجازات</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; }
-        input { padding: 10px; margin: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        button { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; padding: 20px; }
+        .container { background-color: #2c2c2c; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); width: 100%; max-width: 500px; }
+        h2 { text-align: center; color: #4CAF50; }
+        label { display: block; margin-top: 15px; font-size: 0.9em; color: #bbb; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #444; background: #333; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; margin-top: 25px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em; }
+        button:hover { background-color: #45a049; }
+        #outputContainer { margin-top: 30px; display: none; }
+        #finalMessage { background: #111; padding: 15px; border-left: 5px solid #4CAF50; white-space: pre-wrap; font-family: monospace; font-size: 0.9em; }
+        .copy-btn { background-color: #007bff; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>أهلاً بك في موقعي 🚀</h2>
-        <p>اكتب اسمك تحت وشوف وش يصير:</p>
-        <input type="text" id="userName" placeholder="اكتب اسمك هنا...">
-        <br>
-        <button onclick="showMessage()">اضغط هنا</button>
-        <h3 id="result"></h3>
-    </div>
+<div class="container">
+    <h2>نموذج إجازة داخلية 📝</h2>
+    
+    <label>منشن الفني (ID أو اسم):</label>
+    <input type="text" id="techName" placeholder="مثلاً: @Lama">
 
-    <script>
-        function showMessage() {
-            let name = document.getElementById("userName").value;
-            if (name) {
-                document.getElementById("result").innerText = "يا هلا والله بـ " + name + "! تم استلام بياناتك بنجاح ✅";
-            } else {
-                alert("تكفى اكتب اسمك أول 😂");
-            }
-        }
-    </script>
+    <label>المدة (بالساعات):</label>
+    <input type="number" id="duration" placeholder="0">
+
+    <label>الرصيد المتبقي (بالساعات):</label>
+    <input type="number" id="balance" placeholder="0">
+
+    <label>من تاريخ (وقت ويوم):</label>
+    <input type="text" id="startDate" placeholder="2026/01/20 | 10:00 م">
+
+    <label>الى تاريخ (وقت ويوم):</label>
+    <input type="text" id="endDate" placeholder="2026/01/21 | 10:00 م">
+
+    <button onclick="generateMessage()">إنشاء الرسالة ✨</button>
+
+    <div id="outputContainer">
+        <label>انسخي الرسالة من هنا:</label>
+        <div id="finalMessage"></div>
+        <button class="copy-btn" onclick="copyText()">نسخ النص 📋</button>
+    </div>
+</div>
+
+<script>
+    function generateMessage() {
+        const tech = document.getElementById('techName').value;
+        const dur = document.getElementById('duration').value;
+        const bal = document.getElementById('balance').value;
+        const start = document.getElementById('startDate').value;
+        const end = document.getElementById('endDate').value;
+
+        const template = `***\` إجازة داخلية \`*** ***\`الفني المحترم :\`*** ${tech}
+
+***\`المــــدة :\` ${dur} ساعة*** ***\`الرصيد المتبقي :\` ${bal} ساعة*** ***من تاريخ ${start}*** ***الى تاريخ ${end}*** ***\`ملاحظة :\`*** ***تنتهي اجازتك بنفس التوقيت اللي بترجع فية .*** ***\`تنويهات هامة يجب قرائتها :\`*** ***01/ تبدأ الإجازة الخاصة بك في وقتها المحدد، ويُمنع تغيير الوظيفة قبل المدة المحددة لبدء الإجازة.*** ***02/ يجب العودة من الإجازة قبل انتهاء مدتها وتغيير الوظيفة إلى قطاع الميكانيك. من يخالف ذلك سيُعتبر تهرباً وظيفياً وستتم محاسبته من قِبل إدارة الهلال الأحمر .*** ***03/ في حال عندك عذر وقدمته بفتح تكت اجازة سيتم فقط تصفير اجازاتك مهما كان السبب وعدم اعطائك تهرب وظيفي*** ***04/ في حال تم سجنك رقابيا سيتم تطبيق العقوبه عليك حسب قوانين الاجازات *** ***05/يمنع منعاً باتاً تغيير الاسم داخل المقاطعة حسب [قوانين الاجازات]***
+
+<@&1404535885864632340>`;
+
+        document.getElementById('finalMessage').innerText = template;
+        document.getElementById('outputContainer').style.display = 'block';
+    }
+
+    function copyText() {
+        const text = document.getElementById('finalMessage').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("تم النسخ بنجاح! الحين روحي الصقيها في ديسكورد");
+        });
+    }
+</script>
+
 </body>
 </html>
