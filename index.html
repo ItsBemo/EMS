@@ -11,76 +11,81 @@
         }
 
         body {
-            background: url('EMSbgath.png') no-repeat center center fixed; 
+            background: url('ATHEEMS.jpg') no-repeat center center fixed; 
             background-size: cover;
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
             display: flex;
-            justify-content: center; /* توسيط عرضي */
-            align-items: center;    /* توسيط طولي */
+            justify-content: center;
+            align-items: flex-start; /* تغيير من center إلى flex-start لرفع المحتوى */
             min-height: 100vh;
-            padding: 20px;
+            padding-top: 50px; /* مسافة من الأعلى للتحكم في ارتفاع الواجهة */
             box-sizing: border-box;
         }
 
         .main-wrapper {
             width: 100%;
-            max-width: 650px;
+            max-width: 800px; /* تكبير الحاوية لتناسب الأزرار الأكبر */
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
         }
 
-        /* شريط الأزرار العلوي */
+        /* شريط الأزرار العلوي - تعديل اللون والحجم */
         .nav-bar {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .nav-btn {
-            background-color: var(--red-main);
-            color: white;
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
+            background-color: white; /* تغيير اللون للأبيض */
+            color: var(--red-main); /* نص باللون الأحمر */
+            padding: 15px 25px; /* تكبير الحجم */
+            border: 2px solid var(--red-main);
+            border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 1rem; /* تكبير الخط */
             transition: 0.3s;
         }
 
         .nav-btn:hover, .nav-btn.active {
-            background-color: #a00000;
+            background-color: var(--red-main);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         /* صندوق المحتوى الرئيسي */
         .container {
             background: var(--box-bg);
-            padding: 35px;
+            padding: 40px;
             border-radius: 15px;
             border-top: 4px solid var(--red-main);
             box-shadow: 0 20px 50px rgba(0,0,0,0.9);
             text-align: center;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 650px;
         }
 
         h1 {
             color: #fff;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             margin-bottom: 25px;
         }
 
         .form-section { display: none; }
         .form-section.active { display: block; }
 
-        .form-group { text-align: right; margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #ccc; }
+        .form-group { text-align: right; margin-bottom: 18px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.95rem; color: #ccc; }
         
         input, textarea {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: #222;
             border: 1px solid #444;
             border-radius: 8px;
@@ -88,38 +93,40 @@
             box-sizing: border-box;
             outline: none;
             text-align: center;
+            font-size: 1rem;
         }
 
         .action-btns {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 25px;
+            gap: 15px;
+            margin-top: 30px;
         }
 
         .btn-main {
-            padding: 14px;
+            padding: 15px;
             border: none;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
+            font-size: 1rem;
         }
 
         .btn-gen { background-color: var(--red-main); color: white; }
         .btn-copy { background-color: #333; color: white; border: 1px solid #444; }
 
         #output {
-            margin-top: 20px;
+            margin-top: 25px;
             background: #000;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
             display: none;
             white-space: pre-wrap;
             border: 1px dashed var(--red-main);
             text-align: right;
-            font-size: 0.9rem;
-            line-height: 1.6;
+            font-size: 0.95rem;
+            line-height: 1.7;
         }
     </style>
 </head>
