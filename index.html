@@ -89,36 +89,12 @@
             font-size: 1rem;
         }
 
-        /* تنسيق خيارات الوقت الجديد (3 خانات) */
         .manual-time-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
-            direction: ltr; /* لترتيب الخانات بشكل منطقي: ساعة | دقيقة | فترة */
+            direction: ltr;
         }
-
-        .time-options {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .opt-btn {
-            flex: 1;
-            padding: 10px;
-            background: #333;
-            border: 1px solid #555;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .opt-btn.active {
-            background: var(--red-main);
-            border-color: var(--red-main);
-        }
-
-        .hidden { display: none; }
 
         .action-btns {
             display: grid;
@@ -183,28 +159,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label>وقت بدء الإجازة:</label>
-                    <div class="time-options">
-                        <button class="opt-btn active" id="btnNow" onclick="setTimeMode('now')">بدء الآن</button>
-                        <button class="opt-btn" id="btnManual" onclick="setTimeMode('manual')">تحديد وقت</button>
-                    </div>
-                </div>
-
-                <div id="manualTimeInputs" class="hidden">
-                    <div class="form-group">
-                        <label>تاريخ البدء:</label>
-                        <input type="date" id="manualDate">
-                    </div>
-                    <div class="form-group">
-                        <label>تحديد الساعة والدقيقة والفترة:</label>
-                        <div class="manual-time-grid">
-                            <select id="manualPeriod">
-                                <option value="AM">صباحًا</option>
-                                <option value="PM">مساءً</option>
-                            </select>
-                            <input type="number" id="manualMin" placeholder="الدقيقة (0-59)" min="0" max="59">
-                            <input type="number" id="manualHour" placeholder="الساعة (1-12)" min="1" max="12">
-                        </div>
+                    <label>وقت بدء الإجازة (تاريخ اليوم تلقائي):</label>
+                    <div class="manual-time-grid">
+                        <select id="manualPeriod">
+                            <option value="AM">صباحًا</option>
+                            <option value="PM">مساءً</option>
+                        </select>
+                        <input type="number" id="manualMin" placeholder="الدقيقة (0-59)" min="0" max="59">
+                        <input type="number" id="manualHour" placeholder="الساعة (1-12)" min="1" max="12">
                     </div>
                 </div>
             </div>
@@ -219,15 +181,6 @@
     </div>
 
 <script>
-    let timeMode = 'now';
-
-    function setTimeMode(mode) {
-        timeMode = mode;
-        document.getElementById('btnNow').classList.toggle('active', mode === 'now');
-        document.getElementById('btnManual').classList.toggle('active', mode === 'manual');
-        document.getElementById('manualTimeInputs').classList.toggle('hidden', mode === 'now');
-    }
-
     function showSection(sectionId) {
         document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
         const target = document.getElementById(sectionId);
@@ -239,30 +192,27 @@
         const titles = {
             'vacation': 'الشؤون الإدارية - الإجازة',
             'resignation': 'الشؤون الإدارية - الاستقالة',
-            'transfer': 'الشؤون الإدارية - الانتداب'
+            'transfer': 'الشؤون الإدارية - الانتداب',
+            'ext-vacation': 'الشؤون الإدارية - إجازة خارجية',
+            'roles': 'الشؤون الإدارية - طلب الرولات',
+            'tickets': 'الشؤون الإدارية - نماذج التكتات'
         };
         document.getElementById('mainTitle').innerText = titles[sectionId] || "الشؤون الإدارية";
     }
 
     function processData() {
-        let startTime;
-        if (timeMode === 'now') {
-            startTime = new Date();
-        } else {
-            const dStr = document.getElementById('manualDate').value;
-            const h = parseInt(document.getElementById('manualHour').value);
-            const m = parseInt(document.getElementById('manualMin').value);
-            const period = document.getElementById('manualPeriod').value;
+        const startTime = new Date(); // يأخذ تاريخ اليوم تلقائياً
+        const h = parseInt(document.getElementById('manualHour').value);
+        const m = parseInt(document.getElementById('manualMin').value);
+        const period = document.getElementById('manualPeriod').value;
 
-            if (!dStr || isNaN(h) || isNaN(m)) return alert("يرجى إكمال بيانات الوقت والتاريخ");
+        if (isNaN(h) || isNaN(m)) return alert("يرجى إدخال الساعة والدقيقة");
 
-            // تحويل الساعة لنظام 24 ساعة للمعالجة البرمجية
-            let h24 = h;
-            if (period === 'PM' && h < 12) h24 += 12;
-            if (period === 'AM' && h === 12) h24 = 0;
+        let h24 = h;
+        if (period === 'PM' && h < 12) h24 += 12;
+        if (period === 'AM' && h === 12) h24 = 0;
 
-            startTime = new Date(`${dStr}T${h24.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`);
-        }
+        startTime.setHours(h24, m, 0);
 
         const formatTimeAr = (date) => {
             let timeStr = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true });
