@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إجازات الهلال الأحمر</title>
+    <title>بوابة الشؤون الإدارية - الهلال الأحمر</title>
     <style> 
         :root {
             --red-dark: #7b0000;
-            --overlay: rgba(15, 15, 15, 0.85);
+            --overlay: rgba(15, 15, 15, 0.9);
         }
 
         body {
@@ -18,17 +18,49 @@
             background-color: #000;
             color: #eee;
             font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            padding: 40px 20px;
             margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* شريط التنقل العلوي (الأزرار) */
+        .nav-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .nav-btn {
+            background-color: var(--red-dark);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: 0.3s;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: #a00000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,0,0,0.3);
         }
 
         .container {
             background-color: var(--overlay);
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             padding: 30px;
             border-radius: 15px;
             border-top: 5px solid var(--red-dark);
@@ -38,10 +70,13 @@
 
         h1 { color: #fff; text-align: center; font-size: 1.6rem; margin-bottom: 25px; text-shadow: 2px 2px 4px #000; }
         
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #ccc; }
         
-        input {
+        input, select, textarea {
             width: 100%;
             padding: 12px;
             background: rgba(255, 255, 255, 0.1);
@@ -50,13 +85,14 @@
             color: #fff;
             box-sizing: border-box;
             outline: none;
+            font-family: inherit;
         }
 
-        input:focus { border-color: var(--red-dark); background: rgba(255, 255, 255, 0.15); }
+        input:focus { border-color: var(--red-dark); }
 
         .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 25px; }
         
-        button {
+        .action-btn {
             padding: 12px;
             border: none;
             border-radius: 8px;
@@ -67,11 +103,10 @@
 
         .btn-gen { background-color: var(--red-dark); color: white; }
         .btn-copy { background-color: #333; color: white; border: 1px solid #444; }
-        button:hover { opacity: 0.8; transform: scale(1.02); }
 
         #output {
             margin-top: 20px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             padding: 15px;
             border-radius: 8px;
             font-size: 0.85rem;
@@ -85,91 +120,111 @@
 </head>
 <body>
 
-<div class="container">
-    <h1> ⚕ نظام إجازات الهلال الأحمر</h1>
-    
-    <div class="form-group">
-        <label>أدخل Copy ID للمسعف:</label>
-        <input type="text" id="copyID" placeholder="مثال: 123456789">
+    <div class="nav-bar">
+        <button class="nav-btn active" onclick="showSection('vacation')">الإجازة الداخلية</button>
+        <button class="nav-btn" onclick="showSection('resignation')">الاستقالة</button>
+        <button class="nav-btn" onclick="showSection('transfer')">نموذج الانتداب</button>
+        <button class="nav-btn" onclick="showSection('roles')">طلب الرولات</button>
+        <button class="nav-btn" onclick="showSection('templates')">نماذج التكتات</button>
     </div>
 
-    <div class="form-group">
-        <label>مدة الإجازة (بالساعات):</label>
-        <input type="number" id="hours" placeholder="عدد الساعات">
-    </div>
+    <div class="container">
+        <h1 id="mainTitle">الشؤون الإدارية - الإجازة</h1>
 
-    <div class="form-group">
-        <label>الرصيد الإجمالي الحالي (بالساعات):</label>
-        <input type="number" id="remain" placeholder="عدد الساعات">
-    </div>
+        <div id="vacation" class="form-section active">
+            <div class="form-group">
+                <label>أدخل Copy ID للمسعف:</label>
+                <input type="text" id="copyID" placeholder="123456789">
+            </div>
+            <div class="form-group">
+                <label>مدة الإجازة (بالساعات):</label>
+                <input type="number" id="hours" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label>الرصيد الإجمالي الحالي:</label>
+                <input type="number" id="remain" placeholder="0">
+            </div>
+        </div>
 
-    <div class="btns">
-        <button class="btn-gen" onclick="generate()">إنشاء الإجازة </button>
-        <button class="btn-copy" onclick="copy()">نسخ الرسالة </button>
-    </div>
+        <div id="resignation" class="form-section">
+            <div class="form-group">
+                <label>Copy ID المستقيل:</label>
+                <input type="text" id="resigID" placeholder="123456789">
+            </div>
+            <div class="form-group">
+                <label>سبب الاستقالة:</label>
+                <textarea id="resigReason" rows="3" placeholder="أكتب السبب هنا..."></textarea>
+            </div>
+        </div>
 
-    <div id="output"></div>
-</div>
+        <div id="templates" class="form-section">
+            <div class="form-group">
+                <label>اختر نوع التكت:</label>
+                <select id="ticketType">
+                    <option value="طلب دعم فني">طلب دعم فني</option>
+                    <option value="شكوى إدارية">شكوى إدارية</option>
+                    <option value="تعديل بيانات">تعديل بيانات</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="btns">
+            <button class="action-btn btn-gen" onclick="processData()">إنشاء الصيغة ✨</button>
+            <button class="action-btn btn-copy" onclick="copyResult()">نسخ النتيجة 📋</button>
+        </div>
+
+        <div id="output"></div>
+    </div>
 
 <script>
-    function generate() {
-        const idInput = document.getElementById('copyID').value.trim();
-        const hValue = parseFloat(document.getElementById('hours').value) || 0;
-        const rValue = parseFloat(document.getElementById('remain').value) || 0;
+    let currentSection = 'vacation';
+
+    function showSection(sectionId) {
+        // إخفاء الكل وإظهار المختار
+        document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
         
-        const mention = idInput ? `<@${idInput}>` : "( لم يحدد )";
+        // تحديث الأزرار
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
         
-        // حساب الرصيد المتبقي بعد الخصم
-        const finalBalance = rValue - hValue;
-        
-        // وقت البداية (الآن)
+        currentSection = sectionId;
+        document.getElementById('output').style.display = 'none';
+    }
+
+    function processData() {
+        let finalMsg = "";
         const now = new Date();
-        const startDay = now.toLocaleDateString('en-GB'); 
-        const startTime = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+        const d = now.toLocaleDateString('en-GB');
+        const t = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
 
-        // وقت النهاية (حساب الوقت بناءً على الساعات المدخلة)
-        const endDate = new Date(now.getTime() + (hValue * 60 * 60 * 1000));
-        const endDay = endDate.toLocaleDateString('en-GB');
-        const endTime = endDate.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
-
-        const msg = `***\` إجازة داخلية \`*** 
-
-***\`المسعف المحترم :\`***  ${mention}  
-
-***\`المــــدة :\` ${hValue} ساعة***  
-
-***\`الرصيد المتبقي :\` ${finalBalance} ساعة***  
-
-***من تاريخ ${startDay}| ${startTime}***  
-***الى تاريخ ${endDay}| ${endTime}***  
-
-***\`ملاحظة :\`***  
-***تنتهي اجازتك بنفس التوقيت الذي ستعود فيه .***  
-
-***\`تنويهات هامة يجب قراءتها :\`***  
-
-***01/ تبدأ الإجازة الخاصة بك في وقتها المحدد، ويُمنع تغيير الوظيفة قبل المدة المحددة لبدء الإجازة.***  
-
-***02/ يجب العودة من الإجازة قبل انتهاء مدتها وتغيير الوظيفة إلى قطاع الميكانيك. من يخالف ذلك سيُعتبر تهرباً وظيفياً وستتم محاسبته من قِبل إدارة الهلال الأحمر .***  
-
-***03/ في حال كان لديك عذر وقدمته عبر فتح تذكرة إجازة سيتم فقط تصفير إجازاتك مهما كان السبب وعدم إعطائك تهرب وظيفي***  
-
-***04/ في حال تم سجنك رقابياً سيتم تطبيق العقوبة عليك حسب قوانين الإجازات ***  
-
-***05/ يُمنع منعاً باتاً تغيير الاسم داخل المقاطعة حسب قوانين الإجازات***
-
-<@&1404535885864632340>`;
+        if (currentSection === 'vacation') {
+            const id = document.getElementById('copyID').value;
+            const h = parseFloat(document.getElementById('hours').value) || 0;
+            const r = parseFloat(document.getElementById('remain').value) || 0;
+            const endDate = new Date(now.getTime() + (h * 60 * 60 * 1000));
+            
+            finalMsg = `***\` إجازة داخلية \`***\n***\`المسعف المحترم :\`*** <@${id}>\n***\`المــــدة :\` ${h} ساعة***\n***\`الرصيد المتبقي :\` ${r - h} ساعة***\n***من تاريخ ${d}| ${t}***\n***الى تاريخ ${endDate.toLocaleDateString('en-GB')}| ${endDate.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}***\n\n***تنويه: يمنع تغيير الوظيفة قبل انتهاء المدة.***\n<@&1404535885864632340>`;
+        } 
+        else if (currentSection === 'resignation') {
+            const id = document.getElementById('resigID').value;
+            const reason = document.getElementById('resigReason').value;
+            finalMsg = `***\` طلب استقالة \`***\n***\`الموظف :\`*** <@${id}>\n***\`السبب :\`*** ${reason}\n***\`التاريخ :\`*** ${d}\n\nيرجى مراجعة الإدارة المختصة.`;
+        }
+        else {
+            finalMsg = "هذا النموذج تحت التطوير حالياً...";
+        }
 
         const out = document.getElementById('output');
-        out.innerText = msg;
+        out.innerText = finalMsg;
         out.style.display = 'block';
     }
 
-    function copy() {
+    function copyResult() {
         const text = document.getElementById('output').innerText;
-        if(!text) return alert("الرجاء إنشاء الإجازة أولاً!");
+        if(!text) return alert("أنشئ الصيغة أولاً");
         navigator.clipboard.writeText(text);
-        alert("تم النسخ بنجاح! ✅");
+        alert("تم النسخ ✅");
     }
 </script>
 
