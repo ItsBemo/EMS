@@ -89,7 +89,6 @@
             font-size: 1rem;
         }
 
-        /* تنسيق خيار المكافأة القيادية */
         .bonus-option {
             display: flex;
             align-items: center;
@@ -102,8 +101,6 @@
             cursor: pointer;
             border: 1px solid #333;
         }
-
-        .bonus-option input { width: auto; cursor: pointer; }
 
         .manual-time-grid {
             display: grid;
@@ -165,12 +162,10 @@
                     <label>أدخل Copy ID للمسعف:</label>
                     <input type="text" id="copyID_in" placeholder="123456789">
                 </div>
-
                 <div class="bonus-option">
                     <label for="isBonus" style="margin:0; cursor:pointer;">مكافأة قيادية</label>
                     <input type="checkbox" id="isBonus" onchange="toggleLeaderList()">
                 </div>
-
                 <div id="leaderGroup" class="form-group" style="display:none;">
                     <label>اختيار القيادة:</label>
                     <select id="leaderSelect">
@@ -185,7 +180,6 @@
                         <option value="1271182726179061915">عمر النقيب [ E - 009 ]</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label>مدة الإجازة (بالساعات):</label>
                     <input type="number" id="hours_in" placeholder="0">
@@ -204,6 +198,32 @@
                         <input type="number" id="manualMin" placeholder="الدقيقة">
                         <input type="number" id="manualHour" placeholder="الساعة">
                     </div>
+                </div>
+            </div>
+
+            <div id="resignation" class="form-section">
+                <div class="form-group">
+                    <label>المستوى الوظيفي:</label>
+                    <select id="resigLevel">
+                        <option value="low">مستوى متدرب</option>
+                        <option value="low">مستوى 1</option>
+                        <option value="high">مستوى 2 إلى 9</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>أدخل Copy ID للمسعف:</label>
+                    <input type="text" id="resigID" placeholder="123456789">
+                </div>
+                <div class="form-group">
+                    <label>الاسم والكود الميداني:</label>
+                    <input type="text" id="resigNameCode" placeholder="الاسم [ E-000 ]">
+                </div>
+                <div class="form-group">
+                    <label>هل يوجد مخالفات سابقة؟</label>
+                    <select id="hasViolations">
+                        <option value="لا">لا</option>
+                        <option value="نعم">نعم</option>
+                    </select>
                 </div>
             </div>
 
@@ -259,6 +279,7 @@
         
         const titles = {
             'vacation': 'الشؤون الإدارية - الإجازة الداخلية',
+            'resignation': 'الشؤون الإدارية - الاستقالة',
             'transfer': 'الشؤون الإدارية - الانتداب الخارجي',
             'ext-vacation': 'الشؤون الإدارية - إجازة خارجية'
         };
@@ -286,27 +307,32 @@
             const m = parseInt(document.getElementById('manualMin').value);
             const period = document.getElementById('manualPeriod').value;
             const isBonus = document.getElementById('isBonus').checked;
-            
             if (isNaN(h) || isNaN(m)) return alert("يرجى إدخال الوقت");
-
-            let h24 = h;
-            if (period === 'PM' && h < 12) h24 += 12;
-            if (period === 'AM' && h === 12) h24 = 0;
-
+            let h24 = (period === 'PM' && h < 12) ? h + 12 : (period === 'AM' && h === 12) ? 0 : h;
             const startTime = new Date();
             startTime.setHours(h24, m, 0);
             const dur = parseFloat(document.getElementById('hours_in').value) || 0;
             const rem = parseFloat(document.getElementById('remain_in').value) || 0;
             const endTime = new Date(startTime.getTime() + (dur * 60 * 60 * 1000));
-            
             const formatT = (date) => date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/am/gi, 'ص').replace(/pm/gi, 'م');
             const formatD = (date) => date.toLocaleDateString('en-GB').split('/').reverse().join('/');
-
             let titleStr = isBonus ? "إجازة داخلية (مكافاة قيادية)" : "إجازة داخلية";
             let leaderID = document.getElementById('leaderSelect').value;
             let leaderFooter = isBonus ? `\n\n***\`توقيع و اعتماد :\`*** <@${leaderID}>` : "";
-
             finalMsg = `﷽\n\n***الموضوع : ${titleStr}***\n\n***للمسعف :*** <@${document.getElementById('copyID_in').value}>\n\n***\`المــــدة :\`*** ***${dur} ساعة***\n\n***\`الرصيد المتبقي :\`*** ***${rem - dur} ساعة***\n\n\n***من الساعة : ${formatT(startTime)} | ${formatD(startTime)}***\n***إلى الساعة : ${formatT(endTime)} | ${formatD(endTime)}***\n\n ***[يرجى قراءه القوانين قبل تغيير الوظيفة](https://discord.com/channels/1404512396923375696/1404536315537526794/1463297047552725252)*** \n\n***إعتماد : <@&1404535885864632340>***${leaderFooter}`;
+
+        } else if (currentSection === 'resignation') {
+            const levelType = document.getElementById('resigLevel').value;
+            const levelText = document.getElementById('resigLevel').options[document.getElementById('resigLevel').selectedIndex].text;
+            const id = document.getElementById('resigID').value;
+            const nameCode = document.getElementById('resigNameCode').value;
+            const viol = document.getElementById('hasViolations').value;
+
+            if (levelType === 'low') {
+                finalMsg = `﷽\n\n***الموضوع : إنهاء خدمات***\n\n***للمسعف :*** <@${id}>\n\n***\`اسمه وكوده الميداني : ${nameCode}\`***\n\n***\`هل يوجد عليه مخالفات سابقه : ${viol}\`***\n\n***\`العقوبة الاجماليه : فصل من الخدمه + منع من التوظيف (14) يوم + غرامه مالية بقيمه (1,000,000) \`***\n\n***\`سبب الفصل من الخدمة : استقالة ب${levelText}\`***\n\n***إعتماد : <@&1404535885864632340>***`;
+            } else {
+                finalMsg = `﷽\n\n***الموضوع : إستقالة***\n\n***للمسعف :*** <@${id}>\n\n***\`${nameCode}\`***\n\n***\`هل يوجد عليه مخالفات سابقه : ${viol}\`***\n\n***نشكر جهودك المبذولة والملحوظة لدى القطاع ونسأل الله لك التوفيق***\n\n***إعتماد : <@&1404535885864632340>***`;
+            }
 
         } else if (currentSection === 'transfer') {
             const id = document.getElementById('copyID_trans').value;
@@ -314,7 +340,6 @@
             const days = parseInt(document.getElementById('days_trans').value) || 0;
             const endDate = new Date();
             endDate.setDate(now.getDate() + days);
-
             finalMsg = `﷽\n\n***الموضوع : انتداب خارجي***\n\n***للمسعف :*** <@${id}>\n\n***\`القطاع المنتدب له :\`*** *** ${sector}***\n\n***\`المــــدة :\`*** *** ${days} ايام***\n\n***من تاريخ : ${fmt(now)}***\n***إلى تاريخ : ${fmt(endDate)}***\n\n ***نرجوا من الموظف التقيد بالأنظمة والتعليمات الخاصة بالانتدابات، والتنسيق مع الجهة المعنية قبل المباشرة*** \n\n***إعتماد : <@&1404535885864632340>***`;
 
         } else if (currentSection === 'ext-vacation') {
@@ -322,7 +347,6 @@
             const days = parseInt(document.getElementById('days_ext').value) || 0;
             const endDate = new Date();
             endDate.setDate(now.getDate() + days);
-
             finalMsg = `﷽\n\n***الموضوع : إجازة خارجية***\n\n*** للمسعف المحترم :*** <@${id}>\n\n***\`المــــدة :\`*** *** ${days} يوم***\n\n***من تاريخ : ${fmt(now)}***\n***إلى تاريخ : ${fmt(endDate)}***\n\n***[يرجى قراءه القوانين قبل اخذ اجازه خارجية](https://discord.com/channels/1404512396923375696/1404536315537526794/1463297471760568421)***\n\n***إعتماد : <@&1404535885864632340>***`;
         }
 
