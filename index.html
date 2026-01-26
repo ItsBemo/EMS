@@ -42,12 +42,12 @@
         .nav-btn {
             background-color: white; 
             color: var(--red-main); 
-            padding: 15px 25px; 
+            padding: 12px 20px; 
             border: 2px solid var(--red-main);
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 1rem; 
+            font-size: 0.9rem; 
             transition: 0.3s;
         }
 
@@ -205,9 +205,16 @@
                 <div class="form-group">
                     <label>المستوى الوظيفي:</label>
                     <select id="resigLevel">
-                        <option value="low">مستوى متدرب</option>
-                        <option value="low">مستوى 1</option>
-                        <option value="high">مستوى 2 إلى 9</option>
+                        <option value="متدرب">متدرب</option>
+                        <option value="مستوى (1)">مستوى (1)</option>
+                        <option value="مستوى (2)">مستوى (2)</option>
+                        <option value="مستوى (3)">مستوى (3)</option>
+                        <option value="مستوى (4)">مستوى (4)</option>
+                        <option value="مستوى (5)">مستوى (5)</option>
+                        <option value="مستوى (6)">مستوى (6)</option>
+                        <option value="مستوى (7)">مستوى (7)</option>
+                        <option value="مستوى (8)">مستوى (8)</option>
+                        <option value="مستوى (9)">مستوى (9)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -219,10 +226,17 @@
                     <input type="text" id="resigNameCode" placeholder="الاسم [ E-000 ]">
                 </div>
                 <div class="form-group">
-                    <label>هل يوجد مخالفات سابقة؟</label>
-                    <select id="hasViolations">
-                        <option value="لا">لا</option>
-                        <option value="نعم">نعم</option>
+                    <label>توقيع واعتماد (القيادة):</label>
+                    <select id="resigLeader">
+                        <option value="860257492872462426">رامي خالد [ E - 001 ]</option>
+                        <option value="496394841765445665">عبدالله التميمي [ E - 002 ]</option>
+                        <option value="1188040679348240415">لـجـيـن عـبـدالـرحـمـن [ E - 003 ]</option>
+                        <option value="1220054784292290604">فهد القحطاني [ E - 004 ]</option>
+                        <option value="1082700346985558016">ايمن شماخي [ E - 005 ]</option>
+                        <option value="848891690114220073">محمد كاكولي [ E - 006 ]</option>
+                        <option value="510191753165537280">وليد العمودي [ E - 007 ]</option>
+                        <option value="654470198954557472">سهم بن سعود [ E - 008 ]</option>
+                        <option value="1271182726179061915">عمر النقيب [ E - 009 ]</option>
                     </select>
                 </div>
             </div>
@@ -281,7 +295,9 @@
             'vacation': 'الشؤون الإدارية - الإجازة الداخلية',
             'resignation': 'الشؤون الإدارية - الاستقالة',
             'transfer': 'الشؤون الإدارية - الانتداب الخارجي',
-            'ext-vacation': 'الشؤون الإدارية - إجازة خارجية'
+            'ext-vacation': 'الشؤون الإدارية - إجازة خارجية',
+            'roles': 'الشؤون الإدارية - طلب الرولات',
+            'tickets': 'الشؤون الإدارية - نماذج التكتات'
         };
         document.getElementById('mainTitle').innerText = titles[sectionId] || "الشؤون الإدارية";
     }
@@ -322,17 +338,25 @@
             finalMsg = `﷽\n\n***الموضوع : ${titleStr}***\n\n***للمسعف :*** <@${document.getElementById('copyID_in').value}>\n\n***\`المــــدة :\`*** ***${dur} ساعة***\n\n***\`الرصيد المتبقي :\`*** ***${rem - dur} ساعة***\n\n\n***من الساعة : ${formatT(startTime)} | ${formatD(startTime)}***\n***إلى الساعة : ${formatT(endTime)} | ${formatD(endTime)}***\n\n ***[يرجى قراءه القوانين قبل تغيير الوظيفة](https://discord.com/channels/1404512396923375696/1404536315537526794/1463297047552725252)*** \n\n***إعتماد : <@&1404535885864632340>***${leaderFooter}`;
 
         } else if (currentSection === 'resignation') {
-            const levelType = document.getElementById('resigLevel').value;
-            const levelText = document.getElementById('resigLevel').options[document.getElementById('resigLevel').selectedIndex].text;
+            const level = document.getElementById('resigLevel').value;
             const id = document.getElementById('resigID').value;
             const nameCode = document.getElementById('resigNameCode').value;
-            const viol = document.getElementById('hasViolations').value;
+            const leaderID = document.getElementById('resigLeader').value;
 
-            if (levelType === 'low') {
-                finalMsg = `﷽\n\n***الموضوع : إنهاء خدمات***\n\n***للمسعف :*** <@${id}>\n\n***\`اسمه وكوده الميداني : ${nameCode}\`***\n\n***\`هل يوجد عليه مخالفات سابقه : ${viol}\`***\n\n***\`العقوبة الاجماليه : فصل من الخدمه + منع من التوظيف (14) يوم + غرامه مالية بقيمه (1,000,000) \`***\n\n***\`سبب الفصل من الخدمة : استقالة ب${levelText}\`***\n\n***إعتماد : <@&1404535885864632340>***`;
-            } else {
-                finalMsg = `﷽\n\n***الموضوع : إستقالة***\n\n***للمسعف :*** <@${id}>\n\n***\`${nameCode}\`***\n\n***\`هل يوجد عليه مخالفات سابقه : ${viol}\`***\n\n***نشكر جهودك المبذولة والملحوظة لدى القطاع ونسأل الله لك التوفيق***\n\n***إعتماد : <@&1404535885864632340>***`;
-            }
+            finalMsg = `*** ▬▬▬ ﷽ ▬▬\n` +
+            `\`\`\`diff\n` +
+            `-الموضوع : قرار انهاء خدمات\n` +
+            `\`\`\`\n` +
+            `\`\`\`cs\n` +
+            `# بعد الاطلاع على نظام التوظيف والترقيات وانهاء الخدمة الصدر من ادارة الهلال الاحمر قررنا مايلي \n\n` +
+            `اولاً: تنهى خدمات المسعف ادناه اعتبارا من تاريخه\`\`\`\n\n` +
+            `<@${id}> \n` +
+            `${nameCode}\n\n\n` +
+            `\`وذلك بسبب : استقالة برتبة ${level} بناءاً على طلبه \`\n\n` +
+            `\`توقيع واعتماد:\`\n` +
+            `<@${leaderID}>\n\n` +
+            `\`يرسل الاصل الى : \`\n` +
+            `***<@&1404535885864632340>***`;
 
         } else if (currentSection === 'transfer') {
             const id = document.getElementById('copyID_trans').value;
