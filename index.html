@@ -267,7 +267,7 @@
     function checkResigType() {
         const level = document.getElementById('resigLevel').value;
         const billGroup = document.getElementById('billGroup');
-        billGroup.style.display = (level === 'متدرب' || level === 'مستوى (1)') ? 'block' : 'none';
+        billGroup.style.display = (level === 'مستوى (متدرب)' || level === 'مستوى (1)') ? 'block' : 'none';
     }
 
     function processData() {
@@ -281,7 +281,7 @@
             const signerID = document.getElementById('resigSignerID').value;
             const billUrl = document.getElementById('resigBill').value;
 
-            if(level === 'متدرب' || level === 'مستوى (1)') {
+            if(level === 'مستوى (متدرب)' || level === 'مستوى (1)') {
                 finalMsg = `*** ▬▬▬ ﷽ ▬▬\n` +
                 `\`\`\`diff\n\n` +
                 `-الموضوع : قرار انهاء خدمات\n` +
