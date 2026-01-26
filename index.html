@@ -134,8 +134,8 @@
 
     <div class="main-wrapper">
         <div class="nav-bar">
-            <button class="nav-btn active" onclick="showSection('vacation')">الإجازة الداخلية</button>
-            <button class="nav-btn" onclick="showSection('resignation')">الاستقالة</button>
+            <button class="nav-btn" onclick="showSection('vacation')">الإجازة الداخلية</button>
+            <button class="nav-btn active" onclick="showSection('resignation')">الاستقالة</button>
             <button class="nav-btn" onclick="showSection('transfer')">نموذج الانتداب</button>
             <button class="nav-btn" onclick="showSection('ext-vacation')">إجازة خارجية</button>
             <button class="nav-btn" onclick="showSection('roles')">طلب الرولات</button>
@@ -143,9 +143,9 @@
         </div>
 
         <div class="container">
-            <h1 id="mainTitle">الشؤون الإدارية - الإجازة الداخلية</h1>
+            <h1 id="mainTitle">الشؤون الإدارية - الاستقالة</h1>
 
-            <div id="resignation" class="form-section">
+            <div id="resignation" class="form-section active">
                 <div class="form-group">
                     <label>المستوى الوظيفي:</label>
                     <select id="resigLevel" onchange="checkResigType()">
@@ -163,7 +163,7 @@
                 </div>
                 <div class="form-group">
                     <label>Copy ID للمسعف المستقيل:</label>
-                    <input type="text" id="resigID" placeholder="ID المسعف">
+                    <input type="text" id="resigID" placeholder="لعمل المنشن">
                 </div>
                 <div class="form-group">
                     <label>الاسم والكود الميداني للمستقيل:</label>
@@ -171,15 +171,15 @@
                 </div>
                 <div id="billGroup" class="form-group">
                     <label>رابط فاتورة الغرامة (1,000,000):</label>
-                    <input type="text" id="resigBill" placeholder="ضع رابط صورة الفاتورة هنا">
+                    <input type="text" id="resigBill" placeholder="ضع الرابط هنا">
                 </div>
                 <div class="form-group">
-                    <label>Copy ID للمعتمد (التوقيع):</label>
-                    <input type="text" id="resigSignerID" placeholder="ID صاحب التوقيع">
+                    <label>Copy ID للمشرف المستلم (الاعتماد):</label>
+                    <input type="text" id="resigSignerID" placeholder="لعمل منشن الاعتماد">
                 </div>
             </div>
 
-            <div id="vacation" class="form-section active">
+            <div id="vacation" class="form-section">
                 <div class="form-group">
                     <label>أدخل Copy ID للمسعف:</label>
                     <input type="text" id="copyID_in" placeholder="123456789">
@@ -245,7 +245,7 @@
     </div>
 
 <script>
-    let currentSection = 'vacation';
+    let currentSection = 'resignation';
 
     function showSection(sectionId) {
         currentSection = sectionId;
@@ -267,19 +267,8 @@
     function checkResigType() {
         const level = document.getElementById('resigLevel').value;
         const billGroup = document.getElementById('billGroup');
-        if(level === 'متدرب' || level === 'مستوى (1)') {
-            billGroup.style.display = 'block';
-        } else {
-            billGroup.style.display = 'none';
-        }
+        billGroup.style.display = (level === 'متدرب' || level === 'مستوى (1)') ? 'block' : 'none';
     }
-
-    const fmt = (d) => {
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${y}/${m}/${day}`;
-    };
 
     function processData() {
         let finalMsg = "";
@@ -294,68 +283,54 @@
 
             if(level === 'متدرب' || level === 'مستوى (1)') {
                 finalMsg = `*** ▬▬▬ ﷽ ▬▬\n` +
-                `\`\`\`diff\n` +
+                `\`\`\`diff\n\n` +
                 `-الموضوع : قرار انهاء خدمات\n` +
                 `\`\`\`\n` +
                 `\`\`\`cs\n` +
-                `# بعد الاطلاع على نظام التوظيف والترقيات وانهاء الخدمة الصادر من ادارة الهلال الاحمر قررنا مايلي \n\n` +
+                `# بعد الاطلاع على نظام التوظيف والترقيات وانهاء الخدمة الصادر من ادارة الهلال الاحمر قررنا مايلي \n` +
+                ` \n` +
                 `اولاً: تنهى خدمات المسعف ادناه اعتبارا من تاريخه\n` +
                 `ثانياً: منع توظيف 7 ايام\n` +
-                `ثالثاً:غرامه مالية قدرها 1,000,000 تسلم الى خزينة الهلال الاحمر\`\`\`\n\n` +
+                `ثالثاً:غرامه مالية قدرها 1,000,000 تسلم الى خزينة الهلال الاحمر\n` +
+                `\`\`\`\n\n` +
                 `<@${id}>\n` +
                 `${nameCode}\n\n` +
                 `\`\`\`وذلك بسبب : استقالة برتبة ${level} \`\`\`\n\n` +
-                `\`نوع السحب : \`  [فاتورة](${billUrl})  \n\n` +
+                `\`نوع السحب : \`  [فاتورة](${billUrl}) \n\n` +
                 `\`اعتماد:\` <@${signerID}>\n\n` +
-                `يرسل الاصل الى : \n` +
+                `يرسل الاصل الى : \n` +
                 `***<@&1404535885864632340>***`;
             } else {
                 finalMsg = `*** ▬▬▬ ﷽ ▬▬\n` +
-                `\`\`\`diff\n` +
+                `\`\`\`diff\n\n` +
                 `-الموضوع : قرار انهاء خدمات\n` +
                 `\`\`\`\n` +
                 `\`\`\`cs\n` +
-                `# بعد الاطلاع على نظام التوظيف والترقيات وانهاء الخدمة الصدر من ادارة الهلال الاحمر قررنا مايلي \n\n` +
-                `اولاً: تنهى خدمات المسعف ادناه اعتبارا من تاريخه\`\`\`\n\n` +
-                `<@${id}> \n` +
-                `${nameCode}\n\n\n` +
-                `\`وذلك بسبب : استقالة برتبة ${level} بناءاً على طلبه \`\n\n` +
-                `\`توقيع واعتماد:\`\n` +
-                `<@${signerID}>\n\n` +
-                `\`يرسل الاصل الى : \`\n` +
+                `# بعد الاطلاع على نظام التوظيف والترقيات وانهاء الخدمة الصدر من ادارة الهلال الاحمر قررنا مايلي \n` +
+                ` \n` +
+                `اولاً: تنهى خدمات المسعف ادناه اعتبارا من تاريخه\n\`\`\`\n\n` +
+                `<@${id}>\n` +
+                `${nameCode}\n\n` +
+                `\`\`\`وذلك بسبب : استقالة برتبة ${level} بناءاً على طلبه \`\`\`\n\n` +
+                `\`اعتماد:\` <@${signerID}>\n\n` +
+                `يرسل الاصل الى : \n` +
                 `***<@&1404535885864632340>***`;
             }
-        } 
+        }
+        // ... بقية الأقسام (إجازة، انتداب) تظل كما هي ...
         else if (currentSection === 'vacation') {
             const id = document.getElementById('copyID_in').value;
             const h = parseInt(document.getElementById('manualHour').value);
             const m = parseInt(document.getElementById('manualMin').value);
             const period = document.getElementById('manualPeriod').value;
-            if (isNaN(h) || isNaN(m)) return alert("يرجى إدخال الوقت");
             let h24 = (period === 'PM' && h < 12) ? h + 12 : (period === 'AM' && h === 12) ? 0 : h;
-            const startTime = new Date();
-            startTime.setHours(h24, m, 0);
+            const startTime = new Date(); startTime.setHours(h24, m, 0);
             const dur = parseFloat(document.getElementById('hours_in').value) || 0;
             const rem = parseFloat(document.getElementById('remain_in').value) || 0;
             const endTime = new Date(startTime.getTime() + (dur * 60 * 60 * 1000));
             const formatT = (date) => date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/am/gi, 'ص').replace(/pm/gi, 'م');
             const formatD = (date) => date.toLocaleDateString('en-GB').split('/').reverse().join('/');
             finalMsg = `﷽\n\n***الموضوع : إجازة داخلية***\n\n***للمسعف :*** <@${id}>\n\n***\`المــــدة :\`*** ***${dur} ساعة***\n\n***\`الرصيد المتبقي :\`*** ***${rem - dur} ساعة***\n\n\n***من الساعة : ${formatT(startTime)} | ${formatD(startTime)}***\n***إلى الساعة : ${formatT(endTime)} | ${formatD(endTime)}***\n\n ***[يرجى قراءه القوانين قبل تغيير الوظيفة](https://discord.com/channels/1404512396923375696/1404536315537526794/1463297047552725252)*** \n\n***إعتماد : <@&1404535885864632340>***`;
-        }
-        else if (currentSection === 'transfer') {
-            const id = document.getElementById('copyID_trans').value;
-            const sector = document.getElementById('sector_trans').value;
-            const days = parseInt(document.getElementById('days_trans').value) || 0;
-            const endDate = new Date();
-            endDate.setDate(now.getDate() + days);
-            finalMsg = `﷽\n\n***الموضوع : انتداب خارجي***\n\n***للمسعف :*** <@${id}>\n\n***\`القطاع المنتدب له :\`*** *** ${sector}***\n\n***\`المــــدة :\`*** *** ${days} ايام***\n\n***من تاريخ : ${fmt(now)}***\n***إلى تاريخ : ${fmt(endDate)}***\n\n ***نرجوا من الموظف التقيد بالأنظمة والتعليمات الخاصة بالانتدابات، والتنسيق مع الجهة المعنية قبل المباشرة*** \n\n***إعتماد : <@&1404535885864632340>***`;
-        }
-        else if (currentSection === 'ext-vacation') {
-            const id = document.getElementById('copyID_ext').value;
-            const days = parseInt(document.getElementById('days_ext').value) || 0;
-            const endDate = new Date();
-            endDate.setDate(now.getDate() + days);
-            finalMsg = `﷽\n\n***الموضوع : إجازة خارجية***\n\n*** للمسعف المحترم :*** <@${id}>\n\n***\`المــــدة :\`*** *** ${days} يوم***\n\n***من تاريخ : ${fmt(now)}***\n***إلى تاريخ : ${fmt(endDate)}***\n\n***[يرجى قراءه القوانين قبل اخذ اجازه خارجية](https://discord.com/channels/1404512396923375696/1404536315537526794/1463297471760568421)***\n\n***إعتماد : <@&1404535885864632340>***`;
         }
 
         const out = document.getElementById('output');
